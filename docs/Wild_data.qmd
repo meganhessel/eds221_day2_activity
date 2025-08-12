@@ -13,10 +13,80 @@ editor: visual
 library(tidyverse)
 library(here)
 library(janitor)
+library(ggplot2)
 ```
 
 ```{r}
+#download data
 mack_vert <- read_csv(here::here("data","AS00601.csv"))
-mack_vert
+
+#explore data set 
+names(mack_vert)
+
+# clean the data 
+mack_vert <- mack_vert %>% clean_names()
+```
+
+```{r}
+# practice looking at indiviudal pieces of the data frame 
+mc_wt_5 <- mack_vert$weight[5]
+
+mc_length_8_20 <- mack_vert$length1[8:20]
+
+mc_dates <- mack_vert$sampledate
+
+# create a subset different ways 
+mc_salamanders <- subset(mack_vert, species == "DITE") #using subset function
+mc_salamander <- mack_vert[mack_vert$species== "DITE", ] 
+mc_salam <- mack_vert %>% filter(species == "DITE") #using dplyr::filter and pipe-filter
+```
+
+```{r}
+# make a scatterplot 
+mc_sal_plot <- ggplot(data = mc_salamanders, 
+       aes(x = length1, 
+           y = weight, 
+           colour = year)) +
+  scale_color_gradient(low = "darkblue", high = "pink")+
+  geom_point (alpha = 0.8) + 
+  theme_classic() + 
+  labs (title = "Pacific Giant Salamanders Size Distribution", 
+        subtitle = "Population Study in Mack Creek",
+        x = "Length (mm)", 
+        y = "Weight (g)", 
+        caption = "Data is from EDI Data Portal", 
+        color = "Year Caught")
+
+mc_sal_plot
+
+# export 
+ggsave(here::here("figs", "salamander_size.png"))
+
+```
+
+```{r}
+# Trout Plot 
+# make subset 
+mc_trout <- mack_vert %>% filter(species == "ONCL")
+
+# scatterplot 
+mc_trout_plot <- ggplot(data = mc_trout, 
+       aes(x = length1, 
+           y = weight, 
+           color = reach)) + 
+  scale_color_manual(values = c("coral2","cadetblue", "goldenrod2")) +
+  geom_point(alpha = 0.7) + 
+  facet_wrap(~reach) + 
+  labs(title = "Trout Size Distribution", 
+       subtitle = "Population Study in Mack Creek",
+       x = "Length (mm)", 
+       y = "Weight (g)", 
+       caption = "Data is from EDI Data Portal", 
+       color = "Reach")
+
+mc_trout_plot
+
+#export
+ggsave(here::here("figs", "cutthroat_size.png"))
 ```
 

@@ -3,7 +3,9 @@ title: "r_data_types"
 format: html
 editor: visual
 ---
+
 # checking data types
+
 ```{r}
 ## 1
 vec_1 <- c(2, 5, 9, 10, 12, 1, 0)
@@ -39,3 +41,4 @@ class(df_1)
 class(df_1$species)
 max_count <- max(df_1$count)
 ```
+
